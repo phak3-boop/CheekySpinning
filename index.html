@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#15121e" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icon.svg" />
+<title>Spin Game</title>
+<style>
+:root{
+  --bg:#15121e;--panel:#242033;--panel2:#312b45;--text:#fff8ef;--muted:#cfc6df;
+  --gold:#ffd36e;--gold2:#f6aa3b;--purple:#7d5cff;--purple2:#5136d0;
+  --line:rgba(255,255,255,.16);--danger:#ff6f7d;--green:#59d090;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:
+radial-gradient(circle at 15% 0%,rgba(255,211,110,.22),transparent 34rem),
+radial-gradient(circle at 85% 5%,rgba(125,92,255,.34),transparent 32rem),
+linear-gradient(135deg,#100f16,#1d1729 60%,#100f16)}
+body{padding:16px;padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+.app{max-width:1040px;margin:0 auto}
+header{text-align:center;margin:8px 0 18px}
+h1{margin:0;font-size:clamp(2.2rem,10vw,5rem);letter-spacing:.01em;text-shadow:0 6px 24px rgba(0,0,0,.45)}
+.sub{margin:8px auto 0;color:var(--muted);line-height:1.35;max-width:720px}
+.machine{position:relative;border:1px solid var(--line);border-radius:30px;padding:18px;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));box-shadow:0 22px 70px rgba(0,0,0,.38)}
+.topbar{height:22px;border-radius:999px;background:linear-gradient(90deg,var(--gold2),var(--gold),var(--gold2));margin:0 auto 16px;max-width:560px;box-shadow:0 8px 24px rgba(246,170,59,.22)}
+.reels{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.reel{position:relative;min-height:150px;border-radius:18px;padding:12px 10px;background:linear-gradient(180deg,#fff7df,#d6caa9);border:5px solid rgba(0,0,0,.45);box-shadow:inset 0 0 20px rgba(0,0,0,.28),0 10px 25px rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#201629;overflow:hidden}
+.reel:before,.reel:after{content:"";position:absolute;left:0;right:0;height:32%;pointer-events:none}
+.reel:before{top:0;background:linear-gradient(180deg,rgba(255,255,255,.62),transparent)}
+.reel:after{bottom:0;background:linear-gradient(0deg,rgba(0,0,0,.15),transparent)}
+.label{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:900;opacity:.62;margin-bottom:8px;z-index:1}
+.value{z-index:1;text-align:center;font-size:clamp(1.05rem,3.3vw,1.5rem);font-weight:950;line-height:1.08;word-break:break-word}
+.spinning .value{animation:blurspin .075s linear infinite}
+@keyframes blurspin{0%{transform:translateY(-12px);opacity:.22;filter:blur(1px)}50%{transform:translateY(0);opacity:1;filter:blur(0)}100%{transform:translateY(12px);opacity:.22;filter:blur(1px)}}
+.controls{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:18px}
+button{appearance:none;border:0;border-radius:999px;padding:14px 20px;font-weight:950;font-size:1rem;color:white;background:var(--panel2);border:1px solid var(--line);cursor:pointer;touch-action:manipulation}
+button:active{transform:translateY(1px)}
+.spin{min-width:210px;padding:19px 36px;font-size:1.35rem;background:linear-gradient(180deg,var(--purple),var(--purple2));box-shadow:0 14px 30px rgba(125,92,255,.33)}
+.small{font-size:.95rem}.ok{background:var(--green);color:#0d1b13}.danger{background:var(--danger)}.gold{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#241605}
+.settings{display:none;margin-top:16px;border:1px solid var(--line);border-radius:22px;padding:16px;background:rgba(0,0,0,.25)}
+.settings.open{display:block}
+h2{margin:0 0 8px}.hint{color:var(--muted);line-height:1.4;font-size:.94rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.wide{grid-column:1/-1}
+label{display:block;font-weight:900;margin:0 0 6px}
+textarea,input[type=text]{width:100%;border-radius:14px;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:12px;font-size:16px;line-height:1.35}
+textarea{min-height:118px;resize:vertical}
+.conditional{background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:18px;padding:12px}
+.toggle{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.toggle input{transform:scale(1.25)}
+.result{margin-top:12px;text-align:center;color:var(--muted);font-size:.95rem}
+.install{margin:14px auto 0;max-width:760px;text-align:center;color:var(--muted);font-size:.88rem;line-height:1.35}
+@media(max-width:760px){
+ body{padding:10px}.machine{border-radius:22px;padding:12px}.topbar{height:14px;margin-bottom:12px}.reels{grid-template-columns:1fr;gap:9px}
+ .reel{min-height:82px;flex-direction:row;justify-content:space-between;gap:12px;padding:14px;border-radius:16px}
+ .label{margin:0;min-width:74px;text-align:left}.value{text-align:right;flex:1;font-size:1.28rem}.grid{grid-template-columns:1fr}
+ button{width:100%}.spin{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <h1>Spin Game</h1>
+  <p class="sub">Editable slot-machine randomiser. Save it to your Home Screen after hosting it and it behaves like a small private web app.</p>
+</header>
+
+<section class="machine">
+  <div class="topbar"></div>
+  <div class="reels" id="reels">
+    <div class="reel"><div class="label">Spin 1</div><div class="value" id="r1">Ready</div></div>
+    <div class="reel"><div class="label">Spin 2</div><div class="value" id="r2">Ready</div></div>
+    <div class="reel"><div class="label">Spin 3</div><div class="value" id="r3">Ready</div></div>
+    <div class="reel"><div class="label">Spin 4</div><div class="value" id="r4">Ready</div></div>
+    <div class="reel"><div class="label">Spin 5</div><div class="value" id="r5">Ready</div></div>
+  </div>
+
+  <div class="controls">
+    <button class="spin" onclick="spinAll()">SPIN</button>
+    <button onclick="toggleSettings()">Edit categories</button>
+  </div>
+  <div class="result" id="resultText"></div>
+
+  <div class="settings" id="settings">
+    <h2>Edit categories</h2>
+    <p class="hint">One option per line. Spin 4 can either use the default list or change depending on what Spin 3 lands on. Your changes save in this browser.</p>
+    <div class="grid">
+      <div><label for="spin1">Spin 1</label><textarea id="spin1"></textarea></div>
+      <div><label for="spin2">Spin 2</label><textarea id="spin2"></textarea></div>
+      <div><label for="spin3">Spin 3</label><textarea id="spin3"></textarea></div>
+      <div><label for="spin5">Spin 5</label><textarea id="spin5"></textarea></div>
+      <div class="wide">
+        <label for="spin4default">Spin 4 default options</label>
+        <textarea id="spin4default"></textarea>
+      </div>
+      <div class="wide conditional">
+        <div class="toggle">
+          <input type="checkbox" id="useConditional">
+          <label for="useConditional" style="margin:0">Use conditional Spin 4 based on Spin 3</label>
+        </div>
+        <p class="hint">These boxes are auto-created from your Spin 3 options.</p>
+        <div id="conditionalEditors" class="grid"></div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="ok" onclick="saveSettings()">Save</button>
+      <button onclick="loadSettings()">Undo</button>
+      <button class="danger" onclick="resetDefaults()">Reset</button>
+    </div>
+  </div>
+</section>
+
+<p class="install">iPhone/iPad: once hosted, open the page in Safari → Share → Add to Home Screen.</p>
+</div>
+
+<script>
+const KEY="spinGamePagesSettingsV1";
+const defaults={
+ spin1:["Player A","Player B"],
+ spin2:["Target 1","Target 2","Target 3","Target 4","Target 5"],
+ spin3:["Touch","Kiss","Tongue","Finger","Option 5","Option 6"],
+ spin4default:["Gentle","Slow","Steady","Firm","Intense"],
+ spin5:["30 seconds","1 minute","1 minute 30 seconds","2 minutes","2 minutes 30 seconds","3 minutes"],
+ useConditional:true,
+ conditional4:{
+  "Touch":["Gentle","Light","Medium","Firm","Intense"],
+  "Kiss":["Peck","Soft","Lingering","Passionate","Intense"],
+  "Tongue":["Brief","Slow","Steady","Focused","Intense"],
+  "Finger":["1","2","3","4","Full"],
+  "Option 5":["Gentle","Slow","Steady","Deep","Intense"],
+  "Option 6":["Gentle","Slow","Steady","Deep","Intense"]
+ }
+};
+let settings=JSON.parse(JSON.stringify(defaults)); let spinning=false;
+const $=id=>document.getElementById(id);
+function arr(text){return text.split("\n").map(x=>x.trim()).filter(Boolean)}
+function lines(a){return (a||[]).join("\n")}
+function pick(a){return a&&a.length?a[Math.floor(Math.random()*a.length)]:"—"}
+function clean(o){return {
+ spin1:o.spin1?.length?o.spin1:defaults.spin1,
+ spin2:o.spin2?.length?o.spin2:defaults.spin2,
+ spin3:o.spin3?.length?o.spin3:defaults.spin3,
+ spin4default:o.spin4default?.length?o.spin4default:defaults.spin4default,
+ spin5:o.spin5?.length?o.spin5:defaults.spin5,
+ useConditional:!!o.useConditional,
+ conditional4:o.conditional4||{}
+}}
+function spin4For(v){return settings.useConditional&&settings.conditional4[v]?.length?settings.conditional4[v]:settings.spin4default}
+function spinAll(){
+ if(spinning)return; spinning=true; $("resultText").textContent="";
+ $("reels").classList.add("spinning");
+ const interval=setInterval(()=>{let t3=pick(settings.spin3);["r1","r2","r3","r4","r5"].forEach((id,i)=>{
+   const vals=[pick(settings.spin1),pick(settings.spin2),t3,pick(spin4For(t3)),pick(settings.spin5)];
+   $(id).textContent=vals[i];
+ })},65);
+ const s1=pick(settings.spin1),s2=pick(settings.spin2),s3=pick(settings.spin3),s4=pick(spin4For(s3)),s5=pick(settings.spin5);
+ const out=[s1,s2,s3,s4,s5],ids=["r1","r2","r3","r4","r5"];
+ ids.forEach((id,i)=>setTimeout(()=>{$(id).textContent=out[i]; if(i===ids.length-1){clearInterval(interval);$("reels").classList.remove("spinning");spinning=false;$("resultText").textContent=out.join(" • ")}},650+i*330));
+}
+function toggleSettings(){ $("settings").classList.toggle("open"); if($("settings").classList.contains("open"))loadSettings() }
+function buildConditionalEditors(){
+ const wrap=$("conditionalEditors"); wrap.innerHTML="";
+ const spin3=arr($("spin3").value);
+ spin3.forEach(opt=>{
+  const div=document.createElement("div"), lab=document.createElement("label"), ta=document.createElement("textarea");
+  lab.textContent="Spin 4 if Spin 3 = "+opt; ta.dataset.key=opt; ta.value=lines(settings.conditional4?.[opt]||settings.spin4default);
+  div.appendChild(lab); div.appendChild(ta); wrap.appendChild(div);
+ });
+}
+function loadSettings(){
+ try{settings=clean(JSON.parse(localStorage.getItem(KEY))||defaults)}catch(e){settings=JSON.parse(JSON.stringify(defaults))}
+ $("spin1").value=lines(settings.spin1); $("spin2").value=lines(settings.spin2); $("spin3").value=lines(settings.spin3);
+ $("spin4default").value=lines(settings.spin4default); $("spin5").value=lines(settings.spin5); $("useConditional").checked=settings.useConditional;
+ buildConditionalEditors();
+}
+function saveSettings(){
+ const c={}; document.querySelectorAll("#conditionalEditors textarea").forEach(ta=>c[ta.dataset.key]=arr(ta.value));
+ settings=clean({spin1:arr($("spin1").value),spin2:arr($("spin2").value),spin3:arr($("spin3").value),spin4default:arr($("spin4default").value),spin5:arr($("spin5").value),useConditional:$("useConditional").checked,conditional4:c});
+ localStorage.setItem(KEY,JSON.stringify(settings)); buildConditionalEditors(); alert("Saved");
+}
+function resetDefaults(){ if(confirm("Reset all categories?")){settings=JSON.parse(JSON.stringify(defaults));localStorage.setItem(KEY,JSON.stringify(settings));loadSettings()} }
+document.addEventListener("DOMContentLoaded",()=>{loadSettings();$("spin3").addEventListener("input",()=>{settings.spin3=arr($("spin3").value);buildConditionalEditors()})});
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>

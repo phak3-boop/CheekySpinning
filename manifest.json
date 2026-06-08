@@ -1,0 +1,15 @@
+{
+  "name": "Spin Game",
+  "short_name": "Spin Game",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#15121e",
+  "theme_color": "#15121e",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
