@@ -62,18 +62,18 @@ textarea{min-height:118px;resize:vertical}
 <body>
 <div class="app">
 <header>
-  <h1>Spin Game</h1>
-  <p class="sub">Editable slot-machine randomiser. Save it to your Home Screen after hosting it and it behaves like a small private web app.</p>
+  <h1>Sub/Dom Game</h1>
+  <p class="sub">Editable sub/dom randomiser.</p>
 </header>
 
 <section class="machine">
   <div class="topbar"></div>
   <div class="reels" id="reels">
-    <div class="reel"><div class="label">Spin 1</div><div class="value" id="r1">Ready</div></div>
-    <div class="reel"><div class="label">Spin 2</div><div class="value" id="r2">Ready</div></div>
-    <div class="reel"><div class="label">Spin 3</div><div class="value" id="r3">Ready</div></div>
-    <div class="reel"><div class="label">Spin 4</div><div class="value" id="r4">Ready</div></div>
-    <div class="reel"><div class="label">Spin 5</div><div class="value" id="r5">Ready</div></div>
+    <div class="reel"><div class="label">Who</div><div class="value" id="r1">Ready</div></div>
+    <div class="reel"><div class="label">Where</div><div class="value" id="r2">Ready</div></div>
+    <div class="reel"><div class="label">What</div><div class="value" id="r3">Ready</div></div>
+    <div class="reel"><div class="label">How</div><div class="value" id="r4">Ready</div></div>
+    <div class="reel"><div class="label">How long</div><div class="value" id="r5">Ready</div></div>
   </div>
 
   <div class="controls">
@@ -86,20 +86,20 @@ textarea{min-height:118px;resize:vertical}
     <h2>Edit categories</h2>
     <p class="hint">One option per line. Spin 4 can either use the default list or change depending on what Spin 3 lands on. Your changes save in this browser.</p>
     <div class="grid">
-      <div><label for="spin1">Spin 1</label><textarea id="spin1"></textarea></div>
-      <div><label for="spin2">Spin 2</label><textarea id="spin2"></textarea></div>
-      <div><label for="spin3">Spin 3</label><textarea id="spin3"></textarea></div>
-      <div><label for="spin5">Spin 5</label><textarea id="spin5"></textarea></div>
+      <div><label for="spin1">Who</label><textarea id="spin1"></textarea></div>
+      <div><label for="spin2">Where</label><textarea id="spin2"></textarea></div>
+      <div><label for="spin3">What</label><textarea id="spin3"></textarea></div>
+      <div><label for="spin5">How long</label><textarea id="spin5"></textarea></div>
       <div class="wide">
-        <label for="spin4default">Spin 4 default options</label>
+        <label for="spin4default">How default options</label>
         <textarea id="spin4default"></textarea>
       </div>
       <div class="wide conditional">
         <div class="toggle">
           <input type="checkbox" id="useConditional">
-          <label for="useConditional" style="margin:0">Use conditional Spin 4 based on Spin 3</label>
+          <label for="useConditional" style="margin:0">Use conditional How based on What</label>
         </div>
-        <p class="hint">These boxes are auto-created from your Spin 3 options.</p>
+        <p class="hint">These boxes are auto-created from your What options.</p>
         <div id="conditionalEditors" class="grid"></div>
       </div>
     </div>
@@ -117,9 +117,9 @@ textarea{min-height:118px;resize:vertical}
 <script>
 const KEY="spinGamePagesSettingsV1";
 const defaults={
- spin1:["Player A","Player B"],
- spin2:["Target 1","Target 2","Target 3","Target 4","Target 5"],
- spin3:["Touch","Kiss","Tongue","Finger","Option 5","Option 6"],
+ spin1:["Master","Slave"],
+ spin2:["Bum","Pussy","Clit","Nipple","Mouth"],
+ spin3:["Touch","Kiss","Tongue","Finger","Little","Big"],
  spin4default:["Gentle","Slow","Steady","Firm","Intense"],
  spin5:["30 seconds","1 minute","1 minute 30 seconds","2 minutes","2 minutes 30 seconds","3 minutes"],
  useConditional:true,
